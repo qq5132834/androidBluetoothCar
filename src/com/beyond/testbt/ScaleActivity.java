@@ -302,10 +302,9 @@ public class ScaleActivity extends Activity {
 					String str = new String(readBuf);//当接受到的byte[]转为字符串
 					Log.i("从arduino接受到的数据", str); 
 					//**和##是数据流的前缀和后缀，用来判断数据的完整性
-					if(str.indexOf("start")!=-1 && str.indexOf("end")!=-1){
-						str = str.replaceAll("start", "").replace("end", "");
+					 
 						mConversationArrayAdapter.add("received:  " + str);
-					}
+					 
 					
 				}
 				
