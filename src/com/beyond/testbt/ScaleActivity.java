@@ -62,11 +62,9 @@ public class ScaleActivity extends Activity {
 	private String mConnectedDeviceName = null;
 	// Array adapter for the conversation thread
 	private ArrayAdapter<String> mConversationArrayAdapter;
-	// String buffer for outgoing messages
-	// private StringBuffer mOutStringBuffer;
-	// Local Bluetooth adapter
+	 
 	private BluetoothAdapter mBluetoothAdapter = null;
-	// Member object for the chat services
+ 
 	private BluetoothService bluetoothService = null;
 
 	private String numcode = "";
@@ -103,8 +101,6 @@ public class ScaleActivity extends Activity {
 		this.button_right = (Button) this.findViewById(R.id.buttton_RIGHT);
 		this.button_back = (Button) this.findViewById(R.id.buttton_BACK);
 		this.button_read = (Button) this.findViewById(R.id.buttton_Read);
-		
-		
 		
 		// Get local Bluetooth adapter
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -235,9 +231,6 @@ public class ScaleActivity extends Activity {
 		if (D) Log.e(TAG, "-- ON STOP --");
 	}
 
-	/**
-	 * 如果退出，则断开蓝牙并且取消GPS监听
-	 * */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -293,21 +286,13 @@ public class ScaleActivity extends Activity {
 			case MESSAGE_READ:
 				 
 				/**
-				 * 
-				 * 
 				 * 异步接受Arduino向Android发送回来的数据，然后数据摘要在这里处理
-				 * 
-				 * 
 				 * */
 				synchronized (lock) {
 					byte[] readBuf = (byte[]) msg.obj;
 					String str = new String(readBuf);//当接受到的byte[]转为字符串
-					Log.i("从arduino接受到的数据", str); 
-					//**和##是数据流的前缀和后缀，用来判断数据的完整性
-					 
-						mConversationArrayAdapter.add("received:  " + str);
-					 
-					
+					Log.i("从arduino接受到的数据", str); 	 
+						mConversationArrayAdapter.add("received:  " + str);				
 				}
 				
 				break;
@@ -315,9 +300,9 @@ public class ScaleActivity extends Activity {
 				// save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
 				// Toast.makeText(getApplicationContext(),"Connected to " + mConnectedDeviceName,Toast.LENGTH_SHORT).show(); 
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  //发送g字符
-				}
+				//if (null != bluetoothService) {
+				//	bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  //发送g字符
+				//}
 				
 				break;
 			case MESSAGE_TOAST:
@@ -327,9 +312,7 @@ public class ScaleActivity extends Activity {
 		}
 	};
 	
-	/**
-	 * 从一个触发一个后，从新触发的Activtiy中带一个
-	 * */
+	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (D)
 			Log.d(TAG, "onActivityResult " + resultCode);
@@ -366,13 +349,6 @@ public class ScaleActivity extends Activity {
 		case R.id.scan:
 			Intent serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-			return true;
-		case R.id.discoverable:
-			ensureDiscoverable();
-			return true;
-		case R.id.getscale:
-			String sendCommand = StringHexUtils.toHexString("g");
-			bluetoothService.write(sendCommand.getBytes());
 			return true;
 		}
 		return false;

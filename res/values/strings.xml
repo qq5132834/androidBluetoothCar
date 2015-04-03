@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <string name="app_name">btScale Test</string>
+    <string name="app_name">蓝牙小车</string>
 
     <!--  BluetoothChat -->
     <string name="send">Send</string>
