@@ -11,6 +11,7 @@
         android:layout_height="300px"
         android:transcriptMode="alwaysScroll"
     />
+    <!--  -->
     <Button android:id="@+id/buttton_UP"
     	android:layout_width="fill_parent" 
     	android:layout_height="100px"

@@ -104,6 +104,8 @@ public class ScaleActivity extends Activity {
 		this.button_back = (Button) this.findViewById(R.id.buttton_BACK);
 		this.button_read = (Button) this.findViewById(R.id.buttton_Read);
 		
+		
+		
 		// Get local Bluetooth adapter
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
