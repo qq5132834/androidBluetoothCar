@@ -40,7 +40,7 @@
     <Button android:id="@+id/buttton_Read"
     	android:layout_width="fill_parent" 
     	android:layout_height="100px"
-    	android:text="接受Arduino发来的数据"   
+    	android:text="福建工程学院"   
     />
     
 </LinearLayout>
