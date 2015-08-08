@@ -26,8 +26,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -113,16 +115,6 @@ public class ScaleActivity extends Activity {
 		}
 		
 		
-		this.button_up.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  
-				}
-			}
-		});
 		this.button_stop.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -134,6 +126,31 @@ public class ScaleActivity extends Activity {
 				
 			}
 		});
+		
+		this.button_read.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), "read", Toast.LENGTH_LONG).show();
+				if (null != bluetoothService) {
+					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("A")));  
+				}
+			}
+		});
+		
+		/*
+		 		
+		 this.button_up.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
+				if (null != bluetoothService) {
+					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  
+				}
+			}
+		});
+		
 		this.button_left.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -165,15 +182,103 @@ public class ScaleActivity extends Activity {
 				}
 			}
 		});
+		*/
+
 		
-		this.button_read.setOnClickListener(new OnClickListener() {
+		/**
+		 * 松开前进按钮
+		 * */
+		this.button_up.setOnTouchListener(new OnTouchListener() {
 			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "read", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("A")));  
-				}
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.buttton_UP){  
+					 
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  
+						 }
+					 }
+				 }
+				return false;
+			}
+		});
+		
+		/**
+		 * 松开后退按钮
+		 * */
+		this.button_back.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.buttton_BACK){  
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no back", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "back", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("B")));  
+						 }
+					 }
+				 }
+				return false;
+			}
+		});
+		/**
+		 * 松开转左按钮
+		 * */
+		this.button_left.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.buttton_LEFT){  
+					 
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no left", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "left", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("L")));  
+						 }
+					 }
+				 }
+				return false;
+			}
+		});
+		/**
+		 * 松开转右按钮
+		 * */
+		this.button_right.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.buttton_RIGHT){  
+					 
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no right", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "right", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("R")));  
+						 }
+					 }
+				 }
+				return false;
 			}
 		});
 		
