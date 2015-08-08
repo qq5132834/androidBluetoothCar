@@ -41,4 +41,11 @@
     
     <!-- MainActivity -->
     <string name="scale">蓝牙称重</string>
+    
+    
+    <string-array name="action_bar_list">
+    		<item>日历显示</item>
+    		<item>时间轴显示</item>
+    </string-array>
+    
 </resources>
