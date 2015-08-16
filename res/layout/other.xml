@@ -6,6 +6,12 @@
     android:layout_height="fill_parent"
     >
  
+        <LinearLayout 
+        android:id="@+id/mainLay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"  >
+    
     <ListView android:id="@+id/in"
         android:layout_width="fill_parent"
         android:layout_height="300px"
@@ -13,34 +19,59 @@
     />
     <!--  -->
     <Button android:id="@+id/buttton_UP"
-    	android:layout_width="fill_parent" 
-    	android:layout_height="9mm"
+        android:layout_gravity="center_horizontal"
+    	android:layout_width="20mm" 
+    	android:layout_height="10mm"
     	android:text="前进"   
     />
-    <Button android:id="@+id/buttton_LEFT"
+
+   <LinearLayout 
+    	android:orientation="horizontal"
+   	 	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+   <Button android:id="@+id/buttton_LEFT"
     	android:layout_width="fill_parent" 
-    	android:layout_height="9mm"
+    	  android:layout_weight="1"
+    	android:layout_height="10mm"
+    	android:layout_marginRight="10mm"
     	android:text="向左"   
     />
    <Button android:id="@+id/buttton_RIGHT"
     	android:layout_width="fill_parent" 
-    	android:layout_height="9mm"
+    	  android:layout_weight="1"
+    	android:layout_height="10mm"
+    	android:layout_marginLeft="10mm"
     	android:text="向右"   
     />
+    </LinearLayout>
    <Button android:id="@+id/buttton_BACK"
-    	android:layout_width="fill_parent" 
-    	android:layout_height="9mm"
+    	android:layout_gravity="center_horizontal"
+    	android:layout_width="20mm" 
+    	android:layout_height="10mm"
     	android:text="后退"   
     />
-    <Button android:id="@+id/buttton_STOP"
-    	android:layout_width="fill_parent" 
-    	android:layout_height="9mm"
-    	android:text="停止"   
-    />
+ 
+    <LinearLayout 
+    	android:orientation="horizontal"
+   	 	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+        <Button android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="9mm"
+            android:id="@+id/button_ShunShiZhen"
+            android:text="顺时针转"   
+            />
+        <Button android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="9mm"
+            android:id="@+id/button_NiShiZhen"
+            android:text="逆时针转"   
+            />
+    </LinearLayout>
     <Button android:id="@+id/buttton_Read"
     	android:layout_width="fill_parent" 
     	android:layout_height="9mm"
     	android:text="获取小车信息"   
     />
-    
+    </LinearLayout>
 </LinearLayout>

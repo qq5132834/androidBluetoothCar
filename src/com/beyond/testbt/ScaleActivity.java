@@ -2,28 +2,20 @@
 package com.beyond.testbt;
 
  
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
+import java.io.File;
+import java.io.FileOutputStream;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,9 +27,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +42,11 @@ public class ScaleActivity extends Activity {
 	public static final int MESSAGE_DEVICE_NAME = 4;
 	public static final int MESSAGE_TOAST = 5;
 
+	public static final int ACTIONBARSTART = 6; //开始进度条
+	public static final int ACTIONBAREND = 7;	//关闭进度条
+	
+	private MyProgressDialog myProgressDialog = new MyProgressDialog(ScaleActivity.this);
+	
 	// Key names received from the BluetoothChatService Handler
 	public static final String DEVICE_NAME = "device_name";
 	public static final String TOAST = "toast";
@@ -77,12 +72,12 @@ public class ScaleActivity extends Activity {
 	
 	
 	private Button button_up = null;
-	private Button button_stop = null;
 	private Button button_left = null;
 	private Button button_right = null;
 	private Button button_back = null;
 	private Button button_read = null;
-	
+	private Button button_shunShiZhen = null;
+	private Button button_niShiZhen = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +85,7 @@ public class ScaleActivity extends Activity {
 		if (D)
 			Log.e(TAG, "+++ ON CREATE +++");
  
+		
 		// Set up the window layout
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.other);
@@ -101,12 +97,12 @@ public class ScaleActivity extends Activity {
 		mTitle = (TextView) findViewById(R.id.title_right_text);
 		
 		this.button_up = (Button) this.findViewById(R.id.buttton_UP);
-		this.button_stop = (Button) this.findViewById(R.id.buttton_STOP);
 		this.button_left = (Button) this.findViewById(R.id.buttton_LEFT);
 		this.button_right = (Button) this.findViewById(R.id.buttton_RIGHT);
 		this.button_back = (Button) this.findViewById(R.id.buttton_BACK);
 		this.button_read = (Button) this.findViewById(R.id.buttton_Read);
-		
+		this.button_shunShiZhen = (Button) this.findViewById(R.id.button_ShunShiZhen);
+		this.button_niShiZhen = (Button) this.findViewById(R.id.button_NiShiZhen);
 		// Get local Bluetooth adapter
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -118,18 +114,6 @@ public class ScaleActivity extends Activity {
 		}
 		
 		
-		this.button_stop.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "stop", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
-				}
-				
-			}
-		});
-		
 		this.button_read.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -140,53 +124,6 @@ public class ScaleActivity extends Activity {
 				}
 			}
 		});
-		
-		/*
-		 		
-		 this.button_up.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("F")));  
-				}
-			}
-		});
-		
-		this.button_left.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-			    Toast.makeText(getApplicationContext(), "left", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("L")));  
-				}
-			}
-		});
-		this.button_right.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "right", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("R")));  
-				}
-			}
-		});
-		
-		this.button_back.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "back", Toast.LENGTH_LONG).show();
-				if (null != bluetoothService) {
-					bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("B")));  
-				}
-			}
-		});
-		*/
-
 		
 		/**
 		 * 松开前进按钮
@@ -213,6 +150,51 @@ public class ScaleActivity extends Activity {
 			}
 		});
 		
+		
+		this.button_shunShiZhen.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.button_ShunShiZhen){  
+					 
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("M")));  
+						 }
+					 }
+				 }
+				return false;
+			}
+		});
+		
+		this.button_niShiZhen.setOnTouchListener(new OnTouchListener() {
+			
+			public boolean onTouch(View v, MotionEvent event) {
+				 if(v.getId() == R.id.button_NiShiZhen){  
+					 
+					 if(event.getAction() == MotionEvent.ACTION_UP){  
+						 Toast.makeText(getApplicationContext(), "no up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("S")));  
+						 }
+					 }
+					 if(event.getAction() == MotionEvent.ACTION_DOWN){  
+						 Toast.makeText(getApplicationContext(), "up", Toast.LENGTH_LONG).show();
+						 if (null != bluetoothService) {
+								bluetoothService.write(StringHexUtils.hexStr2Bytes(StringHexUtils.encode("N")));  
+						 }
+					 }
+				 }
+				return false;
+			}
+		});
+	
 		/**
 		 * 松开后退按钮
 		 * */
@@ -416,6 +398,17 @@ public class ScaleActivity extends Activity {
 			case MESSAGE_TOAST:
 				Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT).show();
 				break;
+			
+			case ACTIONBARSTART:
+				myProgressDialog.openProgressDialog("蓝牙小车连接图", "正在加载Arduino小车连接图，请稍等...");
+				break;
+			case ACTIONBAREND:
+				myProgressDialog.closeProgressDialog();
+				String filePath = (String) msg.obj;
+				Log.e("蓝牙小车连接图的路径", filePath);
+				Intent it =new Intent(Intent.ACTION_VIEW);
+				it.setDataAndType(Uri.fromFile(new File(filePath)), "image/*");
+				startActivity(it);
 			}
 		}
 	};
@@ -453,12 +446,66 @@ public class ScaleActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.scan:
+		int itemID = item.getItemId();
+		/**
+		 * 搜素蓝牙菜单
+		 * */
+		if(itemID==R.id.scan){
 			Intent serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 			return true;
 		}
+		/**
+		 * 小车连接图
+		 * */
+		if(itemID==R.id.arduino_image){
+			new Thread(){
+				@Override
+				public void run() {
+				// TODO Auto-generated method stub
+					super.run();
+					
+					Message message = new Message();
+					message.what = ACTIONBARSTART;
+					mHandler.sendMessage(message);
+					
+					Resources res = getResources();  
+					Bitmap bmp = BitmapFactory.decodeResource(res, R.drawable.bluetooth_connect_image);
+					String filePath = "/sdcard/action_connect_image.png";
+					File fileImage = new File(filePath);
+					if (fileImage.exists()){
+						fileImage.delete();
+					}else{
+						fileImage.mkdirs();
+					}
+					try {
+						FileOutputStream out = new FileOutputStream(fileImage);
+						bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+						out.flush();
+						out.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					message = null;
+					message = new Message();
+					message.what = ACTIONBAREND;
+					message.obj = filePath;
+					mHandler.sendMessage(message);
+				}
+			}.start();
+			return true;
+		}
+		/**
+		 * 小车说明书
+		 * */
+		if(itemID==R.id.arduino_document){
+			Uri uri = Uri.parse("http://blog.csdn.net/qq5132834/article/details/47123597");  
+			Intent it = new Intent(Intent.ACTION_VIEW, uri);  
+			startActivity(it);
+			return true;
+		}
+		
 		return false;
 	}
 	 

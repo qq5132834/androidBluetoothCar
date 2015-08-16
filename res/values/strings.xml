@@ -35,10 +35,9 @@
     <string name="button_scan">Scan for devices</string>
 
     <!-- Options Menu -->
-    <string name="connect">Connect a device</string>
-    <string name="getScale">Get Scale</string>
-    <string name="discoverable">Make discoverable</string>
-    
+    <string name="connect">连接蓝牙</string>
+    <string name="arduino_image">小车连接图</string>
+    <string  name="arduino_document">说明文档</string>
     <!-- MainActivity -->
     <string name="scale">蓝牙称重</string>
     
